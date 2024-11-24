@@ -17,7 +17,6 @@ struct MyApp {
     running: bool,
     cols: usize,
     rows: usize,
-    dragging: bool,
 }
 
 impl Default for MyApp {
@@ -27,13 +26,12 @@ impl Default for MyApp {
             running: false,
             cols: 10,
             rows: 10,
-            dragging: false,
         }
     }
 }
 
 impl epi::App for MyApp {
-    fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame) {
+    fn update(&mut self, ctx: &egui::CtxRef, _frame: &epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
 
@@ -55,11 +53,7 @@ impl epi::App for MyApp {
                     };
 
                     let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
-                    if response.clicked() {
-                        grid.set(x, y, !cell);
-                    }
-                    if response.dragged() {
-                        self.dragging = true;
+                    if response.clicked() || response.dragged() {
                         grid.set(x, y, true);
                     }
 
