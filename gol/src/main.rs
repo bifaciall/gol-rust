@@ -33,24 +33,7 @@ impl Default for MyApp {
 }
 
 impl epi::App for MyApp {
-    fn update(&mut self, ctx: &egui::CtxRef, _frame: &epi::Frame) {
-        egui::SidePanel::left("settings_panel").show(ctx, |ui| {
-            ui.collapsing("Settings", |ui| {
-                ui.horizontal(|ui| {
-                    ui.label("Columns:");
-                    ui.add(egui::Slider::new(&mut self.cols, 5..=50));
-                });
-                ui.horizontal(|ui| {
-                    ui.label("Rows:");
-                    ui.add(egui::Slider::new(&mut self.rows, 5..=50));
-                });
-
-                if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
-                    self.game = game::Game::new(self.cols, self.rows);
-                }
-            });
-        });
-
+    fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
 
@@ -92,6 +75,19 @@ impl epi::App for MyApp {
             if self.running {
                 self.game.update();
                 self.running = false;
+            }
+
+            ui.horizontal(|ui| {
+                ui.label("Columns:");
+                ui.add(egui::Slider::new(&mut self.cols, 5..=50));
+            });
+            ui.horizontal(|ui| {
+                ui.label("Rows:");
+                ui.add(egui::Slider::new(&mut self.rows, 5..=50));
+            });
+
+            if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
+                self.game = game::Game::new(self.cols, self.rows);
             }
         });
 

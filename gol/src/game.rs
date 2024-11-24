@@ -28,7 +28,7 @@ impl Game {
         self.grid = new_grid;
     }
 
-    fn live_neighbor_count(&self, x: usize, y: usize) -> usize {
+    fn live_neighbor_count(&self, _x: usize, _y: usize) -> usize {
         // Implement neighbor count logic
         0
     }
