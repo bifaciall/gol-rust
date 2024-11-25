@@ -110,7 +110,7 @@ impl epi::App for MyApp {
                         }
                     });
                     if response.response.dragged() {
-                        self.dragging_preset = Some((preset, ctx.input().pointer.interact_pos().unwrap().to_vec2()));
+                        self.dragging_preset = Some((preset, ctx.input().pointer.interact_pos().unwrap().to_vec2().into()));
                     }
                 }
             });
