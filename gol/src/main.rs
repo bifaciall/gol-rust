@@ -98,7 +98,7 @@ impl epi::App for MyApp {
             egui::SidePanel::right("preset_panel").show(ctx, |ui| {
                 ui.heading("Presets");
                 for preset in presets::get_presets() {
-                    ui.group(|ui| {
+                    let response = ui.group(|ui| {
                         ui.label(preset.name);
                         let preset_size = 10.0;
                         for &(dx, dy) in &preset.pattern {
@@ -108,27 +108,24 @@ impl epi::App for MyApp {
                             );
                             ui.painter().rect_filled(rect, 0.0, egui::Color32::WHITE);
                         }
-                    })
-                    .interact(egui::Sense::click_and_drag())
-                    .on_hover_cursor(egui::CursorIcon::Grab)
-                    .on_hover_ui(|ui| {
-                        if ui.input().pointer.any_pressed() {
-                            self.dragging_preset = Some((preset.clone(), ui.input().pointer.interact_pos().unwrap().to_vec2()));
-                        }
                     });
+                    if response.response.dragged() {
+                        self.dragging_preset = Some((preset, ctx.input().pointer.interact_pos().unwrap().to_vec2()));
+                    }
                 }
             });
         });
-        if let Some((preset, pos)) = &self.dragging_preset {
-            let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Foreground, egui::Id::new("dragging_preset")));
-            for &(dx, dy) in &preset.pattern {
-                let rect = egui::Rect::from_min_size(
-                    egui::pos2(pos.x + dx as f32 * 20.0, pos.y + dy as f32 * 20.0),
-                    egui::vec2(20.0, 20.0),
-                );
-                painter.rect_filled(rect, 0.0, egui::Color32::WHITE);
+            
+            if let Some((preset, pos)) = &self.dragging_preset {
+                let painter = ctx.layer_painter(egui::LayerId::new(egui::Order::Foreground, egui::Id::new("dragging_preset")));
+                for &(dx, dy) in &preset.pattern {
+                    let rect = egui::Rect::from_min_size(
+                        egui::pos2(pos.0 + dx as f32 * 20.0, pos.1 + dy as f32 * 20.0),
+                        egui::vec2(20.0, 20.0),
+                    );
+                    painter.rect_filled(rect, 0.0, egui::Color32::WHITE);
+                }
             }
-        }
 
 
         if self.running {
