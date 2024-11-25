@@ -28,11 +28,11 @@ impl Game {
         self.grid = new_grid;
     }
 
-    fn live_neighbor_count(&self, _x: usize, _y: usize) -> usize {
+    fn live_neighbor_count(&self, x: usize, y: usize) -> usize {
         let mut count = 0;
-        for i in -1..1 {
-            for j in -1..1{
-                if i == 0 && j == 0 {
+        for dx in -1..=1 {
+            for dy in -1..=1{
+                if dx == 0 && dy == 0 {
                     continue;
                 }
                 let nx = x.wrapping_add(dx as usize);

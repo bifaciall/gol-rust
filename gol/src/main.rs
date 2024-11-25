@@ -62,13 +62,12 @@ impl epi::App for MyApp {
                 }
             }
 
-            if ui.button("Start").clicked() {
-                self.running = true;
+            if ui.button(if self.running { "Stop" } else { "Start" }).clicked() {
+                self.running = !self.running;
             }
 
             if self.running {
                 self.game.update();
-                self.running = false;
             }
 
             ui.horizontal(|ui| {
@@ -84,6 +83,10 @@ impl epi::App for MyApp {
                 self.game = game::Game::new(self.cols, self.rows);
             }
         });
+
+        if self.running {
+            ctx.request_repaint();
+        }
 
         if ctx.input().key_pressed(egui::Key::C) && ctx.input().modifiers.ctrl {
             std::process::exit(0);
