@@ -48,7 +48,6 @@ impl epi::App for MyApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
 
-            let grid = &mut game.grid;
             let game = &mut self.game;
             let cell_size = 20.0;
 
@@ -75,8 +74,8 @@ impl epi::App for MyApp {
             //         ui.painter().rect_filled(rect, 0.0, color);
             //     }
             // }
-            for y in 0..grid.height {
-                for x in 0..grid.width {
+            for y in 0..game.grid.height {
+                for x in 0..game.grid.width {
                     let cell = game.grid.get(x, y);
                     let next_state = game.get_next_state(x, y);
                     let rect = egui::Rect::from_min_size(
@@ -94,13 +93,14 @@ impl epi::App for MyApp {
 
                     let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
                     if response.clicked() || response.dragged() {
-                        grid.set(x, y, !cell);
+                        game.grid.set(x, y, !cell);
                     }
 
                     ui.painter().rect_stroke(rect, 0.0, egui::Stroke::new(1.0, egui::Color32::GRAY));
                     ui.painter().rect_filled(rect, 0.0, color);
                 }
             }
+            
 
             if ui.button(if self.running { "Stop" } else { "Start" }).clicked() {
                 self.running = !self.running;
