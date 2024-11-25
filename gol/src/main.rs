@@ -81,7 +81,7 @@ impl epi::App for MyApp {
             });
 
             if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
-                self.game = game::Game::new(self.cols, self.rows);
+                self game = game::Game::new(self.cols, self.rows);
             }
         });
 
