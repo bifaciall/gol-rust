@@ -18,7 +18,6 @@ struct MyApp {
     cols: usize,
     rows: usize,
     generation_delay: u64,
-
 }
 
 impl Default for MyApp {
@@ -33,10 +32,16 @@ impl Default for MyApp {
     }
 }
 
-impl epi::App for MyApp {
+impl MyApp {
     fn randomize_starting_conditions(&mut self) {
         self.game.randomize_grid();
     }
+    fn clear_grid(&mut self) {
+        self.game.clear_grid();
+    }
+}
+
+impl epi::App for MyApp {
     fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
@@ -74,6 +79,9 @@ impl epi::App for MyApp {
             if ui.button("Randomize Starting Conditions").clicked() {
                 self.randomize_starting_conditions();
             }
+            if ui.button("Clear Grid").clicked() {
+                self.clear_grid();
+            }
 
             if self.running {
                 self.game.update();
@@ -93,14 +101,10 @@ impl epi::App for MyApp {
                 ui.add(egui::Slider::new(&mut self.generation_delay, 50..=1000)); // Add generation delay slider
             });
 
-
             if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
                 self.game = game::Game::new(self.cols, self.rows);
             }
-            
         });
-
-
 
         if self.running {
             ctx.request_repaint();

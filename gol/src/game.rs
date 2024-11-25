@@ -20,6 +20,13 @@ impl Game {
             }
         }
     }
+    pub fn clear_grid(&mut self) {
+        for y in 0..self.grid.height {
+            for x in 0..self.grid.width {
+                self.grid.set(x, y, false);
+            }
+        }
+    }   
 
     pub fn update(&mut self) {
         let mut new_grid = self.grid.clone();
