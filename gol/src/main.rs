@@ -18,6 +18,7 @@ struct MyApp {
     cols: usize,
     rows: usize,
     generation_delay: u64,
+    color_map: bool,
 }
 
 impl Default for MyApp {
@@ -28,6 +29,7 @@ impl Default for MyApp {
             cols: 10,
             rows: 10,
             generation_delay: 500,
+            color_map: false,
         }
     }
 }
@@ -46,21 +48,48 @@ impl epi::App for MyApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
 
-            let grid = &mut self.game.grid;
+            let grid = &mut game.grid;
+            let game = &mut self.game;
             let cell_size = 20.0;
 
+            // for y in 0..grid.height {
+            //     for x in 0..grid.width {
+            //         let cell = grid.get(x, y);
+            //         let rect = egui::Rect::from_min_size(
+            //             egui::pos2(x as f32 * cell_size, y as f32 * cell_size),
+            //             egui::vec2(cell_size, cell_size),
+            //         );
+
+            //         let color = if cell {
+            //             egui::Color32::WHITE
+            //         } else {
+            //             egui::Color32::BLACK
+            //         };
+
+            //         let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
+            //         if response.clicked() || response.dragged() {
+            //             grid.set(x, y, !cell);
+            //         }
+
+            //         ui.painter().rect_stroke(rect, 0.0, egui::Stroke::new(1.0, egui::Color32::GRAY));
+            //         ui.painter().rect_filled(rect, 0.0, color);
+            //     }
+            // }
             for y in 0..grid.height {
                 for x in 0..grid.width {
-                    let cell = grid.get(x, y);
+                    let cell = game.grid.get(x, y);
+                    let next_state = game.get_next_state(x, y);
                     let rect = egui::Rect::from_min_size(
                         egui::pos2(x as f32 * cell_size, y as f32 * cell_size),
                         egui::vec2(cell_size, cell_size),
                     );
 
-                    let color = if cell {
-                        egui::Color32::WHITE
-                    } else {
-                        egui::Color32::BLACK
+                    let color = match (cell, next_state, self.color_map) {
+                        (true, true, true) => egui::Color32::from_rgb(0, 255, 0), // Survives: green
+                        (false, true, true) => egui::Color32::from_rgb(0, 128, 0), // Replicates: real green
+                        (true, false, true) => egui::Color32::from_rgb(255, 0, 0), // Dies: red
+                        (_, _, false) => if cell { egui::Color32::WHITE } else { egui::Color32::BLACK }, // Default colors
+                        _ => egui::Color32::BLACK, // Fallback case
                     };
 
                     let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
@@ -82,6 +111,8 @@ impl epi::App for MyApp {
             if ui.button("Clear Grid").clicked() {
                 self.clear_grid();
             }
+            ui.checkbox(&mut self.color_map, "Activate Color Map"); // Add checkbox for color map toggle
+
 
             if self.running {
                 self.game.update();

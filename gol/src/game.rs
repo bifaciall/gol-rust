@@ -2,12 +2,22 @@ use crate::grid::Grid;
 
 pub struct Game {
     pub grid: Grid,
+    
 }
 
 impl Game {
     pub fn new(width: usize, height: usize) -> Self {
         Self {
             grid: Grid::new(width, height),
+        }
+    }
+    pub fn get_next_state(&self, x: usize, y: usize) -> bool {
+        let live_neighbors = self.live_neighbor_count(x, y);
+        let cell = self.grid.get(x, y);
+        match (cell, live_neighbors) {
+            (true, 2) | (true, 3) => true,
+            (false, 3) => true,
+            _ => false,
         }
     }
     pub fn randomize_grid(&mut self) {
