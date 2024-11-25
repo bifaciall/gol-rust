@@ -17,6 +17,7 @@ struct MyApp {
     running: bool,
     cols: usize,
     rows: usize,
+    generation_delay: u64,
 }
 
 impl Default for MyApp {
@@ -26,6 +27,7 @@ impl Default for MyApp {
             running: false,
             cols: 10,
             rows: 10,
+            generation_delay: 500,
         }
     }
 }
@@ -54,7 +56,7 @@ impl epi::App for MyApp {
 
                     let response = ui.allocate_rect(rect, egui::Sense::click_and_drag());
                     if response.clicked() || response.dragged() {
-                        grid.set(x, y, true);
+                        grid.set(x, y, !cell);
                     }
 
                     ui.painter().rect_stroke(rect, 0.0, egui::Stroke::new(1.0, egui::Color32::GRAY));
@@ -68,6 +70,7 @@ impl epi::App for MyApp {
 
             if self.running {
                 self.game.update();
+                std::thread::sleep(std::time::Duration::from_millis(self.generation_delay));
             }
 
             ui.horizontal(|ui| {
@@ -78,6 +81,11 @@ impl epi::App for MyApp {
                 ui.label("Rows:");
                 ui.add(egui::Slider::new(&mut self.rows, 5..=50));
             });
+            ui.horizontal(|ui| {
+                ui.label("Generation Delay (ms):");
+                ui.add(egui::Slider::new(&mut self.generation_delay, 50..=1000)); // Add generation delay slider
+            });
+
 
             if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
                 self.game = game::Game::new(self.cols, self.rows);
