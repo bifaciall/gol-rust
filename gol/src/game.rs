@@ -10,6 +10,16 @@ impl Game {
             grid: Grid::new(width, height),
         }
     }
+    pub fn randomize_grid(&mut self) {
+        use rand::Rng;
+        let mut rng = rand::thread_rng();
+        for y in 0..self.grid.height {
+            for x in 0..self.grid.width {
+                let random_value: bool = rng.gen();
+                self.grid.set(x, y, random_value);
+            }
+        }
+    }
 
     pub fn update(&mut self) {
         let mut new_grid = self.grid.clone();

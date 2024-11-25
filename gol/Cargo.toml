@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 egui = "0.15"
 eframe = "0.15"
+rand = "0.8"

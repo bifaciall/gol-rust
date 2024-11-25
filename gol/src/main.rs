@@ -34,6 +34,9 @@ impl Default for MyApp {
 }
 
 impl epi::App for MyApp {
+    fn randomize_starting_conditions(&mut self) {
+        self.game.randomize_grid();
+    }
     fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
@@ -67,6 +70,9 @@ impl epi::App for MyApp {
 
             if ui.button(if self.running { "Stop" } else { "Start" }).clicked() {
                 self.running = !self.running;
+            }
+            if ui.button("Randomize Starting Conditions").clicked() {
+                self.randomize_starting_conditions();
             }
 
             if self.running {
