@@ -31,7 +31,7 @@ impl Default for MyApp {
 }
 
 impl epi::App for MyApp {
-    fn update(&mut self, ctx: &egui::CtxRef, _frame: &epi::Frame) {
+    fn update(&mut self, ctx: &egui::CtxRef, _frame: &mut epi::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Game of Life");
 
@@ -81,7 +81,7 @@ impl epi::App for MyApp {
             });
 
             if self.cols != self.game.grid.width || self.rows != self.game.grid.height {
-                self game = game::Game::new(self.cols, self.rows);
+                self.game = game::Game::new(self.cols, self.rows);
             }
         });
 

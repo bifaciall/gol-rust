@@ -29,7 +29,19 @@ impl Game {
     }
 
     fn live_neighbor_count(&self, _x: usize, _y: usize) -> usize {
-        // Implement neighbor count logic
-        0
+        let mut count = 0;
+        for i in -1..1 {
+            for j in -1..1{
+                if i == 0 && j == 0 {
+                    continue;
+                }
+                let nx = x.wrapping_add(dx as usize);
+                let ny = y.wrapping_add(dy as usize);
+                if nx < self.grid.width && ny < self.grid.height && self.grid.get(nx, ny) {
+                count += 1;
+            }
+            }
+        } 
+        count
     }
 }
